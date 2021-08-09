@@ -1,0 +1,7 @@
+# Ignore basic app files
+node_modules
+.arc
+.history
+.vscode
+.env.local
+.env.*.local
