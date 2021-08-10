@@ -17,7 +17,12 @@ function updateItem(id, item) {
   return dataQueries.updateItem(id, item)
 }
 
+function removeItem(id) {
+  return dataQueries.deleteItem(id);
+}
+
 module.exports = {
   getItem,
-  updateItem
+  updateItem,
+  removeItem
 };

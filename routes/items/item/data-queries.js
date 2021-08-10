@@ -18,7 +18,13 @@ function updateItem(id, item) {
   return database.update(tableName, id, item);
 }
 
+// Removing from DB
+function deleteItem(id) {
+  return database.remove(tableName, id);
+}
+
 module.exports = {
   selectItem,
   updateItem,
+  deleteItem,
 };

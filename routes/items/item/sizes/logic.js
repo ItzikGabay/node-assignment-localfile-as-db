@@ -12,6 +12,11 @@ function getSizes(itemID) {
     return dataQueries.selectSizes(itemID);
 }
 
-module.exports = {
-    getSizes
+function updateSize(id, item) {
+  return dataQueries.updateSizes(id, item);
 }
+
+module.exports = {
+  getSizes,
+  updateSize
+};

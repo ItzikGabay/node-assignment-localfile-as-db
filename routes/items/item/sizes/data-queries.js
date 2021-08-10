@@ -16,6 +16,12 @@ function selectSizes(itemID) {
   // return items[0].size
 }
 
+// Inserting to DB
+function updateSizes(id, item) {
+  return database.update(tableName, id, item);
+}
+
 module.exports = {
   selectSizes,
+  updateSizes,
 };

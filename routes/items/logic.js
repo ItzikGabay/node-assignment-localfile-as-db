@@ -10,8 +10,8 @@ const dataQueries = require("./data-queries");
  * * getItems() - getting all items from DB(data queries file function)
  *********************************/
 
-function getItems() {
-  return dataQueries.selectItems();
+function getItems(query) {
+  return dataQueries.selectItems(query);
 }
 
 function createItem(item) {

@@ -12,11 +12,36 @@ let errorMessage = "No such table.";
 
 const db = {
   items: [
-    { id: 1, price: 10, text: "phone" },
-    { id: 2, price: 333, text: "wallet" },
-    { id: 3, price: 345, text: "car" },
-    { id: 4, price: 42, text: "massage" },
-    { id: 5, price: 126, text: "computer" },
+    {
+      id: 1,
+      price: 10,
+      text: "phone",
+      size: { width: 10, height: 10, depth: 10 },
+    },
+    {
+      id: 2,
+      price: 333,
+      text: "wallet",
+      size: { width: 440, height: 550, depth: 220 },
+    },
+    {
+      id: 3,
+      price: 345,
+      text: "car",
+      size: { width: 10, height: 20, depth: 10 },
+    },
+    {
+      id: 4,
+      price: 42,
+      text: "massage",
+      size: { width: 10, height: 10, depth: 10 },
+    },
+    {
+      id: 5,
+      price: 126,
+      text: "computer",
+      size: { width: 10, height: 10, depth: 10 },
+    },
     { id: 6, price: 96, text: "mouse" },
     { id: 7, price: 654, text: "screen" },
   ],
@@ -72,6 +97,9 @@ function update(tableName, itemID, newItem) {
   const rows = db[tableName];
   for (let i = 0; i < rows.length; i++) {
     if (rows[i].id === itemID) {
+      if (rows[i].size) {
+        return Object.assign(rows[i].size, newItem)
+      }
       // rows[i] = newItem;
       Object.assign(rows[i], newItem);
       return;
