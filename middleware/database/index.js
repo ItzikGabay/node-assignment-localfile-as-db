@@ -76,17 +76,30 @@ function insert(tableName, item) {
   return item;
 }
 
+
 /*********************************
  * * remove() - Insert data to specific table
  *********************************/
-function remove(tableName, id) {
-    if (!db[tableName]) {
-      msg: error;
-    }
-  
-  const rows = select(tableName);
-  db[tableName] = rows.filter(row => row.id !== id);
+function remove(tableName, id, item) {
+  if (!db[tableName]) {
+    msg: error;
+  }
 
+  const rows = select(tableName);
+  if (!item) db[tableName] = rows.filter((row) => row.id !== id);
+  if (item) {
+    let currentItem = rows[id];
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].id == id) {
+            for (let j = 0; j < item.length; j++) {
+              let ind = item[j];
+              delete rows[i].size[ind];
+            }
+        break;
+      }
+    }
+    db[tableName] = rows
+  }
 }
 
 function update(tableName, itemID, newItem) {
@@ -112,7 +125,6 @@ function update(tableName, itemID, newItem) {
  *********************************/
 function _searchById(arr, id) {
   let result = arr.filter((item) => item.id === id);
-  console.log(result);
   return result;
 }
 
@@ -121,5 +133,5 @@ module.exports = {
   select,
   insert,
   remove,
-  update
+  update,
 };
