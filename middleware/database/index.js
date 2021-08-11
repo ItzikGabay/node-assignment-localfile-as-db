@@ -84,7 +84,8 @@ function remove(tableName, id, item) {
   if (!db[tableName]) {
     msg: error;
   }
-
+  
+// ['width', 'height']
   const rows = select(tableName);
   if (!item) db[tableName] = rows.filter((row) => row.id !== id);
   if (item) {
@@ -110,12 +111,11 @@ function update(tableName, itemID, newItem) {
   const rows = db[tableName];
   for (let i = 0; i < rows.length; i++) {
     if (rows[i].id === itemID) {
-      if (rows[i].size) {
-        return Object.assign(rows[i].size, newItem)
+      if (Object.keys(newItem)[0] === 'sizes') {
+        return Object.assign(rows[i].size, newItem.sizes);
       }
       // rows[i] = newItem;
-      Object.assign(rows[i], newItem);
-      return;
+      return Object.assign(rows[i], newItem);
     }
   }
 }

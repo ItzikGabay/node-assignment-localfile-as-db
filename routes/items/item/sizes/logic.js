@@ -16,7 +16,17 @@ function updateSize(id, item) {
   return dataQueries.updateSizes(id, item);
 }
 
+function insertSizes(id, item) {
+  return dataQueries.insertSizes(id, item);
+}
+
+function removeSize(id, item) {
+  return dataQueries.deleteSize(id, item);
+}
+
 module.exports = {
   getSizes,
-  updateSize
+  updateSize,
+  removeSize,
+  insertSizes,
 };
