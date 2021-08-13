@@ -18,15 +18,17 @@ router.use("/:itemID", itemRoute);
 
 // items/ - GET ->
 router.get('/', (req, res) => {
-  let result = itemsLogic.getItems(req.query)
-  res.status(200).json({ result });
+  itemsLogic.getItems(req.query, result => {
+    res.status(200).json({ result });
+  })
 })
 
 
 // items/ - POST ->
 router.post('/', (req, res) => {
-  let result = itemsLogic.createItem(req.body.item)
-  res.status(200).json({result})
+  itemsLogic.createItem(req.body.item, result => {
+    res.status(200).json({ result });
+  })
 })
 
 module.exports = router;

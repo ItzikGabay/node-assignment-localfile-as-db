@@ -10,12 +10,12 @@ const dataQueries = require("./data-queries");
  * * getItems() - getting all items from DB(data queries file function)
  *********************************/
 
-function getItems(query) {
-  return dataQueries.selectItems(query);
+function getItems(query, callback) {
+  dataQueries.selectItems(query, items => callback(items));
 }
 
-function createItem(item) {
-    return dataQueries.insertItem(item);
+function createItem(item, callback) {
+  dataQueries.insertItem(item, callback);
 }
 
 module.exports = {

@@ -4,76 +4,60 @@
  *********************************/
 "use strict";
 
+const fs = require("fs")
 let errorMessage = "No such table.";
 
 /*********************************
  * * Fake data - local database
  *********************************/
 
-const db = {
-  items: [
-    {
-      id: 1,
-      price: 10,
-      text: "phone",
-      size: { width: 10, height: 10, depth: 10 },
-    },
-    {
-      id: 2,
-      price: 333,
-      text: "wallet",
-      size: { width: 440, height: 550, depth: 220 },
-    },
-    {
-      id: 3,
-      price: 345,
-      text: "car",
-      size: { width: 10, height: 20, depth: 10 },
-    },
-    {
-      id: 4,
-      price: 42,
-      text: "massage",
-      size: { width: 10, height: 10, depth: 10 },
-    },
-    {
-      id: 5,
-      price: 126,
-      text: "computer",
-      size: { width: 10, height: 10, depth: 10 },
-    },
-    { id: 6, price: 96, text: "mouse" },
-    { id: 7, price: 654, text: "screen" },
-  ],
-};
 
 /*********************************
  * * Select() - Get data of specific table
  *********************************/
 
-function select(tableName, id) {
-  if (!db[tableName]) {
-    msg: errorMessage;
-  }
-  let arr = JSON.parse(JSON.stringify(db[tableName]));
-  if (id) {
-    arr = _searchById(arr, id)
-  }
-  return arr
+function select(tableName, id, callback) {
+
+  // We going to make FS as main DB
+  // We going to connect it to db.txt
+
+
+  _readFile((db) => {
+    // callback(db)
+    // return
+      if (!db[tableName]) {
+        msg: errorMessage;
+      }
+        
+      // let arr = JSON.parse(JSON.stringify(db[tableName]));
+      let arr = db[tableName];
+      if (id) {
+        arr = _searchById(arr, id);
+      }
+      callback(arr);
+    }
+  );
+
+  // -- end
+
+
 }
 
 /*********************************
  * * insert() - Insert data to specific table
  *********************************/
 
-function insert(tableName, item) {
-  if (!db[tableName]) {
-    msg: error;
-  }
+function insert(tableName, item, callback) {
+  _readFile((db) => {
+    if (!db[tableName]) {
+      msg: errorMessage;
+    }
 
-  item.id = new Date().getTime();
-  db[tableName].push(item);
-  return item;
+    item.id = new Date().getTime();
+    db[tableName].push(item);
+    _writeFile(db)
+    callback(item)
+  });
 }
 
 
@@ -128,7 +112,29 @@ function _searchById(arr, id) {
   return result;
 }
 
+function _readFile(callback) {
+    fs.readFile(
+      __dirname + "/db.txt",
+      { encoding: "utf8", flag: "r" },
+      (err, db) => {
+        if (err) {
+          console.log(err);
+        } else {
+          // callback(db)
+          callback(JSON.parse(db));
+        }
+      }
+    );
+}
 
+function _writeFile(db) {
+  db = JSON.stringify(db);
+  fs.writeFile(__dirname + "/db.txt", db, (err) => {
+    if (err) return console.log(err);
+  });
+}
+
+ 
 module.exports = {
   select,
   insert,
