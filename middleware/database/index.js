@@ -84,6 +84,7 @@ function remove(tableName, id, item, callback) {
       }
     }
     db[tableName] = rows;
+    _writeFile(db);
     callback(db[tableName]);
   }
 }
@@ -98,14 +99,16 @@ function update(tableName, itemID, newItem, callback) {
     const rows = db[tableName];
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id === itemID) {
-        if (Object.keys(newItem)[0] === "sizes") {
+        if (Object.keys(newItem)[0] === "sizes" || Object.keys(newItem)[0] === "size") {
           Object.assign(rows[i].size, newItem.sizes);
+          _writeFile(db);
           callback(rows[i].size);
+        } else {
+          Object.assign(rows[i], newItem);
+          _writeFile(db);
+          callback(rows[i]);
         }
         // rows[i] = newItem;
-        Object.assign(rows[i], newItem);
-        _writeFile(db);
-        callback(rows[i]);
       }
     }
   })

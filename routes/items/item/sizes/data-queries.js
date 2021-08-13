@@ -10,24 +10,25 @@ const database = require("../../../../middleware/database/index");
 const tableName = "items";
 
 
-function selectSizes(itemID) {
-  const items = database.select(tableName, itemID);
-  return items[0].size;
+function selectSizes(itemID, callback) {
+  database.select(tableName, itemID, items => {
+    callback(items[0].size)
+  });
 }
 
 // Inserting to DB
-function updateSizes(id, item) {
-  return database.update(tableName, id, item);
+function updateSizes(id, item, callback) {
+  database.update(tableName, id, item, callback);
 }
 
 // Inserting to DB
-function insertSizes(id, item) {
-  return database.update(tableName, id, item);
+function insertSizes(id, item, callback) {
+  database.update(tableName, id, item, callback);
 }
 
 // Inserting to DB
-function deleteSize(id, item) {
-  return database.remove(tableName, id, item);
+function deleteSize(id, item, callback) {
+  database.remove(tableName, id, item, callback);
 }
 
 module.exports = {
