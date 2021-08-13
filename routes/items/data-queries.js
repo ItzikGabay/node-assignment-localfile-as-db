@@ -9,23 +9,22 @@ const tableName = "items";
 const database = require("../../middleware/database/index");
 
 // Getting info from DB
-function selectItems(query, callback) {
-  database.select(tableName, undefined, items => {
+function selectItems(query) {
+  return database.select(tableName)
+  .then(items => {
     if (!!query.priceIsGreater) {
       items = items.filter((item) => item.price >= query.priceIsGreater);
     }
     if (!!query.priceIsLower) {
       items = items.filter((item) => item.price <= query.priceIsLower);
     }
-    callback(items);
+    return items;
   });
 }
 
 // Inserting to DB
-function insertItem(item, callback) {
-  database.insert(tableName, item, result => {
-    callback(result)
-  });
+function insertItem(item) {
+  return database.insert(tableName, item)
 }
 
 module.exports = {

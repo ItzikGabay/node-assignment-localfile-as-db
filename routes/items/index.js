@@ -18,7 +18,8 @@ router.use("/:itemID", itemRoute);
 
 // items/ - GET ->
 router.get('/', (req, res) => {
-  itemsLogic.getItems(req.query, result => {
+  itemsLogic.getItems(req.query)
+  .then(result => {
     res.status(200).json({ result });
   })
 })
@@ -26,7 +27,8 @@ router.get('/', (req, res) => {
 
 // items/ - POST ->
 router.post('/', (req, res) => {
-  itemsLogic.createItem(req.body.item, result => {
+  itemsLogic.createItem(req.body.item)
+  .then(result => {
     res.status(200).json({ result });
   })
 })

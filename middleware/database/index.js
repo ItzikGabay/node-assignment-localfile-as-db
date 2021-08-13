@@ -4,7 +4,7 @@
  *********************************/
 "use strict";
 
-const fs = require("fs")
+const fs = require("fs").promises
 let errorMessage = "No such table.";
 
 /*********************************
@@ -17,47 +17,35 @@ let errorMessage = "No such table.";
  *********************************/
 
 function select(tableName, id, callback) {
-
-  // We going to make FS as main DB
-  // We going to connect it to db.txt
-
-
-  _readFile((db) => {
-    // callback(db)
-    // return
-      if (!db[tableName]) {
-        msg: errorMessage;
-      }
-        
-      // let arr = JSON.parse(JSON.stringify(db[tableName]));
-      let arr = db[tableName];
-      if (id) {
-        arr = _searchById(arr, id);
-      }
-      callback(arr);
+  return _readFile().then(db => {
+    if (!db[tableName]) {
+      msg: errorMessage;
     }
-  );
 
-  // -- end
-
-
+    let arr = db[tableName];
+    if (id) {
+      arr = _searchById(arr, id);
+    }
+    return arr;
+  })
 }
 
 /*********************************
  * * insert() - Insert data to specific table
  *********************************/
 
-function insert(tableName, item, callback) {
-  _readFile((db) => {
+function insert(tableName, item) {
+  return _readFile()
+    .then(db => {
     if (!db[tableName]) {
       msg: errorMessage;
     }
 
     item.id = new Date().getTime();
     db[tableName].push(item);
-    _writeFile(db)
-    callback(item)
-  });
+      _writeFile(db)
+        return item;
+  })
 }
 
 
@@ -122,26 +110,16 @@ function _searchById(arr, id) {
   return result;
 }
 
-function _readFile(callback) {
-    fs.readFile(
-      __dirname + "/db.txt",
-      { encoding: "utf8", flag: "r" },
-      (err, db) => {
-        if (err) {
-          console.log(err);
-        } else {
-          // callback(db)
-          callback(JSON.parse(db));
-        }
-      }
-    );
+function _readFile() {
+    return fs.readFile(__dirname + "/db.txt", { encoding: "utf8", flag: "r" })
+      .then(db => JSON.parse(db))
+      .catch(err => console.error(err))
 }
 
 function _writeFile(db) {
   db = JSON.stringify(db);
-  fs.writeFile(__dirname + "/db.txt", db, (err) => {
-    if (err) return console.log(err);
-  });
+  return fs.writeFile(__dirname + "/db.txt", db)
+    .catch(err => console.log(err) )
 }
 
  
