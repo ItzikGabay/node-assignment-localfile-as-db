@@ -9,18 +9,18 @@ const tableName = "items";
 const database = require("../../../middleware/database/index")
 
 // Getting info from DB
-function selectItem(id) {
-  return database.select(tableName, id);
+function selectItem(id, callback) {
+  return database.select(tableName, id, callback);
 }
 
 // Inserting to DB
-function updateItem(id, item) {
-  return database.update(tableName, id, item);
+function updateItem(id, item, callback) {
+  return database.update(tableName, id, item, callback);
 }
 
 // Removing from DB
-function deleteItem(id) {
-  return database.remove(tableName, id);
+function deleteItem(id, callback) {
+  return database.remove(tableName, id, callback);
 }
 
 module.exports = {

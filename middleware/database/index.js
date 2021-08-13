@@ -64,44 +64,51 @@ function insert(tableName, item, callback) {
 /*********************************
  * * remove() - Insert data to specific table
  *********************************/
-function remove(tableName, id, item) {
+function remove(tableName, id, item, callback) {
   if (!db[tableName]) {
     msg: error;
   }
-  
-// ['width', 'height']
+
+  // ['width', 'height']
   const rows = select(tableName);
   if (!item) db[tableName] = rows.filter((row) => row.id !== id);
   if (item) {
     let currentItem = rows[id];
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id == id) {
-            for (let j = 0; j < item.length; j++) {
-              let ind = item[j];
-              delete rows[i].size[ind];
-            }
+        for (let j = 0; j < item.length; j++) {
+          let ind = item[j];
+          delete rows[i].size[ind];
+        }
         break;
       }
     }
-    db[tableName] = rows
+    db[tableName] = rows;
+    callback(db[tableName]);
   }
 }
 
-function update(tableName, itemID, newItem) {
+function update(tableName, itemID, newItem, callback) {
+
+  _readFile((db) => {
     if (!db[tableName]) {
       msg: error;
     }
-  
-  const rows = db[tableName];
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i].id === itemID) {
-      if (Object.keys(newItem)[0] === 'sizes') {
-        return Object.assign(rows[i].size, newItem.sizes);
+
+    const rows = db[tableName];
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].id === itemID) {
+        if (Object.keys(newItem)[0] === "sizes") {
+          Object.assign(rows[i].size, newItem.sizes);
+          callback(rows[i].size);
+        }
+        // rows[i] = newItem;
+        Object.assign(rows[i], newItem);
+        _writeFile(db);
+        callback(rows[i]);
       }
-      // rows[i] = newItem;
-      return Object.assign(rows[i], newItem);
     }
-  }
+  })
 }
 
 /*********************************
