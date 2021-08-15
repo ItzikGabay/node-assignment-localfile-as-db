@@ -1,53 +1,46 @@
-
 /*********************************
  * * /middleware/database/index.js - Functions of the DB.
  *********************************/
 "use strict";
 
-const fs = require("fs").promises
+const fs = require("fs").promises;
 let errorMessage = "No such table.";
-
-/*********************************
- * * Fake data - local database
- *********************************/
-
 
 /*********************************
  * * Select() - Get data of specific table
  *********************************/
 
-function select(tableName, id, callback) {
-  return _readFile().then(db => {
-    if (!db[tableName]) {
-      msg: errorMessage;
-    }
+async function select(tableName, id, callback) {
+  const db = await _readFile();
+  
+  if (!db[tableName]) {
+    return db.msg
+  }
 
-    let arr = db[tableName];
-    if (id) {
-      arr = _searchById(arr, id);
-    }
-    return arr;
-  })
+  let arr = db[tableName];
+  if (id) {
+    arr = _searchById(arr, id);
+  }
+  return arr;
 }
 
 /*********************************
  * * insert() - Insert data to specific table
  *********************************/
 
-function insert(tableName, item) {
-  return _readFile()
-    .then(db => {
-    if (!db[tableName]) {
-      msg: errorMessage;
-    }
+async function insert(tableName, item) {
+  let db = [];
+  db = await _readFile();
 
-    item.id = new Date().getTime();
-    db[tableName].push(item);
-      _writeFile(db)
-        return item;
-  })
+  if (!db[tableName]) {
+    msg: errorMessage;
+  }
+
+  item.id = new Date().getTime();
+  db[tableName].push(item);
+  _writeFile(db);
+  return item;
 }
-
 
 /*********************************
  * * remove() - Insert data to specific table
@@ -77,8 +70,11 @@ function remove(tableName, id, item, callback) {
   }
 }
 
-function update(tableName, itemID, newItem, callback) {
+/*********************************
+ * * update() - Update data to specific table
+ *********************************/
 
+function update(tableName, itemID, newItem, callback) {
   _readFile((db) => {
     if (!db[tableName]) {
       msg: error;
@@ -87,7 +83,10 @@ function update(tableName, itemID, newItem, callback) {
     const rows = db[tableName];
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id === itemID) {
-        if (Object.keys(newItem)[0] === "sizes" || Object.keys(newItem)[0] === "size") {
+        if (
+          Object.keys(newItem)[0] === "sizes" ||
+          Object.keys(newItem)[0] === "size"
+        ) {
           Object.assign(rows[i].size, newItem.sizes);
           _writeFile(db);
           callback(rows[i].size);
@@ -96,10 +95,9 @@ function update(tableName, itemID, newItem, callback) {
           _writeFile(db);
           callback(rows[i]);
         }
-        // rows[i] = newItem;
       }
     }
-  })
+  });
 }
 
 /*********************************
@@ -110,19 +108,40 @@ function _searchById(arr, id) {
   return result;
 }
 
-function _readFile() {
-    return fs.readFile(__dirname + "/db.txt", { encoding: "utf8", flag: "r" })
-      .then(db => JSON.parse(db))
-      .catch(err => console.error(err))
+/*********************************
+ * * readFile() - Read data from specific file, return it as JSON
+ *********************************/
+
+async function _readFile() {
+  let db = [];
+  try {
+    db = await fs.readFile(__dirname + "/db.t", {
+      encoding: "utf8",
+      flag: "r",
+    });
+    db = JSON.parse(db);
+    return db;
+  } catch (err) {
+    return {
+      msg: err
+    }
+  }
 }
 
-function _writeFile(db) {
+/*********************************
+ * * writeFile() - Insert data to specific table
+ *********************************/
+
+async function _writeFile(db) {
   db = JSON.stringify(db);
-  return fs.writeFile(__dirname + "/db.txt", db)
-    .catch(err => console.log(err) )
+  await fs.writeFile(__dirname + "/db.txt", db);
+  return db;
 }
 
- 
+/*********************************
+ * * exports
+ *********************************/
+
 module.exports = {
   select,
   insert,

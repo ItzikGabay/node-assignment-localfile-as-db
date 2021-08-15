@@ -17,20 +17,16 @@ router.use("/:itemID", itemRoute);
 
 
 // items/ - GET ->
-router.get('/', (req, res) => {
-  itemsLogic.getItems(req.query)
-  .then(result => {
-    res.status(200).json({ result });
-  })
+router.get('/', async (req, res) => {
+  const result = await itemsLogic.getItems(req.query)
+  res.status(200).json({ result });
 })
 
 
 // items/ - POST ->
-router.post('/', (req, res) => {
-  itemsLogic.createItem(req.body.item)
-  .then(result => {
-    res.status(200).json({ result });
-  })
+router.post('/', async (req, res) => {
+  const result = await itemsLogic.createItem(req.body.item)
+  res.status(200).json({ result });
 })
 
 module.exports = router;

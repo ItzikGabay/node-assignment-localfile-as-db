@@ -8,10 +8,13 @@
 const tableName = "items";
 const database = require("../../middleware/database/index");
 
-// Getting info from DB
-function selectItems(query) {
-  return database.select(tableName)
-  .then(items => {
+
+/*********************************
+ * * selectItems() - Getting info from DB
+ *********************************/
+
+async function selectItems(query) {
+  let items = await database.select(tableName)
     if (!!query.priceIsGreater) {
       items = items.filter((item) => item.price >= query.priceIsGreater);
     }
@@ -19,13 +22,19 @@ function selectItems(query) {
       items = items.filter((item) => item.price <= query.priceIsLower);
     }
     return items;
-  });
 }
 
-// Inserting to DB
+/*********************************
+ * * insertItem() - Inserting info to DB
+ *********************************/
+
 function insertItem(item) {
   return database.insert(tableName, item)
 }
+
+/*********************************
+ * * exports
+ *********************************/
 
 module.exports = {
   selectItems,
