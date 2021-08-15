@@ -10,10 +10,9 @@ const database = require("../../../../middleware/database/index");
 const tableName = "items";
 
 
-function selectSizes(itemID, callback) {
-  database.select(tableName, itemID, items => {
-    callback(items[0].size)
-  });
+async function selectSizes(itemID, callback) {
+  const items = await database.select(tableName, itemID)
+  return items[0].size
 }
 
 // Inserting to DB

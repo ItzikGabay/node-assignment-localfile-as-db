@@ -11,17 +11,15 @@ const sizesRoute = require("./sizes/index");
 router.use("/sizes", sizesRoute);
 
 // items/item // $GET
-router.get('/', (req, res) => {
-  itemLogic.getItem(Number(req.params.itemID), (result) => {
-    res.status(200).json({ result });
-  });
+router.get('/', async (req, res) => {
+  const result = await itemLogic.getItem(Number(req.params.itemID))
+  res.status(200).json({ result });
 });
 
 // items/item // $PUT
-router.put('/', (req, res) => {
-  const result = itemLogic.updateItem(Number(req.params.itemID), req.body.item, (result) => {
-    res.status(200).json({result});
-    });
+router.put('/', async (req, res) => {
+  const result = await itemLogic.updateItem(Number(req.params.itemID), req.body.item)
+  res.status(200).json({result});
 });
 
 // items/item // $DELETE

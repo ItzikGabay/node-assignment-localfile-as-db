@@ -10,18 +10,14 @@ let errorMessage = "No such table.";
  * * Select() - Get data of specific table
  *********************************/
 
-async function select(tableName, id, callback) {
-  const db = await _readFile();
+async function select(tableName, id) {
+  let db = await _readFile();
   
-  if (!db[tableName]) {
-    return db.msg
-  }
-
-  let arr = db[tableName];
+  if (!db) db.msg;
   if (id) {
-    arr = _searchById(arr, id);
+    db = _searchById(db, id);
   }
-  return arr;
+  return db;
 }
 
 /*********************************
@@ -29,58 +25,61 @@ async function select(tableName, id, callback) {
  *********************************/
 
 async function insert(tableName, item) {
-  let db = [];
-  db = await _readFile();
 
-  if (!db[tableName]) {
-    msg: errorMessage;
-  }
-
+  // get data
+  const db = await select(tableName);
+  
+  // push id to new item
   item.id = new Date().getTime();
-  db[tableName].push(item);
+  // push new item to array
+  db.push(item);
+  // save the changes
   _writeFile(db);
-  return item;
+  // return the data
+  return 'inserted sucessfully!'
 }
 
 /*********************************
  * * remove() - Insert data to specific table
  *********************************/
-function remove(tableName, id, item, callback) {
-  if (!db[tableName]) {
-    msg: error;
-  }
+async function remove(tableName, id, item) {
 
-  // ['width', 'height']
-  const rows = select(tableName);
-  if (!item) db[tableName] = rows.filter((row) => row.id !== id);
+  // get data
+  let db = await select(tableName);
+
+  if (!item) db = db.filter((row) => row.id !== id);
+
   if (item) {
-    let currentItem = rows[id];
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i].id == id) {
+    let currentItem = db[id];
+    for (let i = 0; i < db.length; i++) {
+      if (db[i].id == id) {
         for (let j = 0; j < item.length; j++) {
           let ind = item[j];
-          delete rows[i].size[ind];
+          delete db[i].size[ind];
         }
         break;
       }
     }
-    db[tableName] = rows;
-    _writeFile(db);
-    callback(db[tableName]);
   }
+
+  _writeFile(db);
+  return 'Deleted sucessfully'
+
 }
 
 /*********************************
  * * update() - Update data to specific table
  *********************************/
 
-function update(tableName, itemID, newItem, callback) {
-  _readFile((db) => {
+async function update(tableName, itemID, newItem) {
+
+  const db = await _readFile()
+    
     if (!db[tableName]) {
-      msg: error;
+      msg: errorMessage;
     }
 
-    const rows = db[tableName];
+    const rows = db;
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].id === itemID) {
         if (
@@ -88,16 +87,13 @@ function update(tableName, itemID, newItem, callback) {
           Object.keys(newItem)[0] === "size"
         ) {
           Object.assign(rows[i].size, newItem.sizes);
-          _writeFile(db);
-          callback(rows[i].size);
         } else {
           Object.assign(rows[i], newItem);
-          _writeFile(db);
-          callback(rows[i]);
         }
       }
     }
-  });
+  const result = await _writeFile(db);
+  return ` ${itemID} Updated sucessfully`;
 }
 
 /*********************************
@@ -115,7 +111,7 @@ function _searchById(arr, id) {
 async function _readFile() {
   let db = [];
   try {
-    db = await fs.readFile(__dirname + "/db.t", {
+    db = await fs.readFile(__dirname + "/db.txt", {
       encoding: "utf8",
       flag: "r",
     });

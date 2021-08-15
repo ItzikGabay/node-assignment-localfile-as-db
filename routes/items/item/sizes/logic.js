@@ -8,8 +8,9 @@ const dataQueries = require("./data-queries");
 /*********************************
  * * getSizes() - getting all items from DB(data queries file function)
  *********************************/
-function getSizes(itemID, callback) {
-  dataQueries.selectSizes(itemID, callback);
+async function getSizes(itemID, callback) {
+  const result = await dataQueries.selectSizes(itemID, callback);
+  return result;
 }
 
 function updateSize(id, item, callback) {

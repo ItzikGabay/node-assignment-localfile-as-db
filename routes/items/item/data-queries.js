@@ -9,8 +9,8 @@ const tableName = "items";
 const database = require("../../../middleware/database/index")
 
 // Getting info from DB
-function selectItem(id, callback) {
-  return database.select(tableName, id, callback);
+function selectItem(id) {
+  return database.select(tableName, id);
 }
 
 // Inserting to DB

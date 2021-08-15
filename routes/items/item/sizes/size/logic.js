@@ -5,8 +5,8 @@
 
 const sizesDataQueries = require("../data-queries");
 
-function getSize(itemID, query) {
-  const sizes = sizesDataQueries.selectSizes(itemID, query);
+async function getSize(itemID, query) {
+  const sizes = await sizesDataQueries.selectSizes(itemID, query);
   const result = {}
   result[query] = sizes[query]
   return result
